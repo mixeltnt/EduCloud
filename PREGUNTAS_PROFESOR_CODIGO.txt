@@ -1,0 +1,256 @@
+30 PREGUNTAS TIPO PROFESOR SOBRE EL CODIGO DEL PROYECTO EDUCLOUD
+
+============================================================
+1. PREGUNTAS GENERALES DEL PROYECTO
+============================================================
+
+1. Que es EduCloud en este proyecto?
+Respuesta: Es una landing page para una academia virtual de cursos online de programacion y diseno.
+
+2. Que tecnologias principales usaste?
+Respuesta: Use React para crear componentes, Vite para el entorno de desarrollo y Bootstrap para estilos responsivos.
+
+3. Por que dividiste la pagina en componentes?
+Respuesta: Para ordenar mejor el codigo, reutilizar partes de la interfaz y facilitar el mantenimiento del proyecto.
+
+4. Cual es el componente principal de la aplicacion?
+Respuesta: App.jsx, porque importa y organiza todas las secciones de la pagina.
+
+5. Que componentes se renderizan desde App.jsx?
+Respuesta: Navbar, Hero, Features, CoursesCarousel, Instructors, FAQAccordion, Footer y RegistrationModal.
+
+============================================================
+2. PREGUNTAS SOBRE APP.JSX Y PROPS
+============================================================
+
+6. Que hace el estado showModal en App.jsx?
+Respuesta: Controla si el modal de registro esta abierto o cerrado.
+
+7. Por que showModal esta en App.jsx y no dentro de Navbar o Hero?
+Respuesta: Porque el modal se puede abrir desde Navbar y Hero. Por eso conviene manejar ese estado en un componente padre.
+
+8. Que significa pasar onRegisterClick como prop?
+Respuesta: Significa enviar una funcion desde App.jsx hacia otros componentes para que puedan abrir el modal.
+
+9. Como abre el modal el boton del Navbar?
+Respuesta: El boton ejecuta onRegisterClick, y esa funcion en App.jsx hace setShowModal(true).
+
+10. Como se cierra el modal?
+Respuesta: RegistrationModal recibe la prop onClose, que ejecuta setShowModal(false) desde App.jsx.
+
+============================================================
+3. PREGUNTAS SOBRE USESTATE
+============================================================
+
+11. Para que sirve useState en React?
+Respuesta: Sirve para guardar datos que pueden cambiar y hacer que la interfaz se actualice cuando cambian.
+
+12. Donde usas useState en este proyecto?
+Respuesta: En App.jsx, Navbar.jsx, CoursesCarousel.jsx, FAQAccordion.jsx, RegistrationModal.jsx y Footer.jsx.
+
+13. Que estados maneja RegistrationModal?
+Respuesta: formData para los datos del formulario, errors para los errores y submitted para saber si ya se envio correctamente.
+
+14. Que estado usa FAQAccordion?
+Respuesta: Usa openIndex para saber que pregunta esta abierta.
+
+15. Que estado usa CoursesCarousel?
+Respuesta: Usa activeIndex para saber que curso se esta mostrando en el carrusel.
+
+============================================================
+4. PREGUNTAS SOBRE NAVBAR
+============================================================
+
+16. Que controla isOpen en Navbar.jsx?
+Respuesta: Controla si el menu hamburguesa esta abierto o cerrado en pantallas pequenas.
+
+17. Que controla coursesOpen?
+Respuesta: Controla si el dropdown de cursos esta abierto o cerrado.
+
+18. Para que sirve closeMenu?
+Respuesta: Sirve para cerrar el menu hamburguesa y el dropdown cuando el usuario navega o presiona registrarse.
+
+19. El dropdown depende del JavaScript de Bootstrap?
+Respuesta: No. Visualmente usa clases de Bootstrap, pero la apertura y cierre se controla con React y useState.
+
+============================================================
+5. PREGUNTAS SOBRE COURSES CAROUSEL
+============================================================
+
+20. Que representa el arreglo courses?
+Respuesta: Representa los cursos del carrusel. Cada objeto contiene titulo, categoria, nivel, descripcion y estilo visual.
+
+21. Que hace activeIndex?
+Respuesta: Guarda la posicion del curso que se esta mostrando actualmente.
+
+22. Para que sirve activeCourse?
+Respuesta: activeCourse toma el curso actual usando courses[activeIndex], para mostrar su informacion en pantalla.
+
+23. Que hace la funcion nextCourse?
+Respuesta: Avanza al siguiente curso modificando activeIndex.
+
+24. Que hace la funcion prevCourse?
+Respuesta: Retrocede al curso anterior modificando activeIndex.
+
+25. Por que se usa el operador modulo (%) en el carrusel?
+Respuesta: Para que el indice vuelva al inicio cuando llega al final, y para que no se salga del arreglo.
+
+26. Para que sirve useEffect en CoursesCarousel.jsx?
+Respuesta: Sirve para crear un intervalo que cambia automaticamente el curso cada 4.5 segundos.
+
+27. Por que se usa clearInterval dentro del return del useEffect?
+Respuesta: Para limpiar el temporizador cuando el componente se desmonta y evitar procesos innecesarios.
+
+============================================================
+6. PREGUNTAS SOBRE FAQ ACCORDION
+============================================================
+
+28. Que significa que openIndex empiece en -1?
+Respuesta: Significa que al cargar la pagina ninguna pregunta del acordeon esta abierta.
+
+29. Como sabe el acordeon que pregunta abrir?
+Respuesta: Compara openIndex con el index de cada pregunta. Si son iguales, esa pregunta se muestra abierta.
+
+30. Que hace esta parte: onClick={() => setOpenIndex(isOpen ? -1 : index)}?
+Respuesta: Si la pregunta ya esta abierta, la cierra colocando -1. Si esta cerrada, la abre colocando su index.
+
+============================================================
+7. PREGUNTAS EXTRA PARA PRACTICAR MAS
+============================================================
+
+31. Que funcion cumple el arreglo faqs?
+Respuesta: Guarda las preguntas y respuestas que se muestran en el acordeon.
+
+32. Por que usas map en FAQAccordion?
+Respuesta: Para recorrer el arreglo faqs y crear automaticamente un bloque por cada pregunta.
+
+33. Por que cada elemento generado con map necesita key?
+Respuesta: Porque React necesita una clave unica para identificar cada elemento de la lista y actualizarlo correctamente.
+
+34. Que clase de Bootstrap muestra una respuesta abierta en el acordeon?
+Respuesta: La clase show.
+
+35. Que clase se usa cuando el boton del acordeon esta cerrado?
+Respuesta: La clase collapsed.
+
+============================================================
+8. PREGUNTAS SOBRE REGISTRATION MODAL
+============================================================
+
+36. Que hace RegistrationModal?
+Respuesta: Muestra un modal con formulario de registro, valida los datos y muestra un mensaje de confirmacion.
+
+37. Que hace esta linea: if (!isOpen) return null?
+Respuesta: Evita renderizar el modal cuando isOpen es false.
+
+38. Para que sirve initialForm?
+Respuesta: Define los valores iniciales del formulario y tambien sirve para limpiar los campos.
+
+39. Que guarda formData?
+Respuesta: Guarda lo que el usuario escribe o selecciona en el formulario.
+
+40. Que guarda errors?
+Respuesta: Guarda los mensajes de error de cada campo cuando la validacion falla.
+
+41. Que guarda submitted?
+Respuesta: Guarda si el formulario fue enviado correctamente para mostrar el mensaje de exito.
+
+42. Que valida la funcion validate?
+Respuesta: Valida que el nombre tenga al menos 3 caracteres, que el correo tenga formato correcto y que se seleccione un curso.
+
+43. Que hace handleChange?
+Respuesta: Actualiza formData cuando el usuario escribe o selecciona una opcion.
+
+44. Por que handleChange usa [name]: value?
+Respuesta: Porque permite actualizar dinamicamente el campo correspondiente: name, email o interest.
+
+45. Que hace handleSubmit?
+Respuesta: Evita que la pagina se recargue, valida el formulario y si no hay errores muestra la confirmacion.
+
+46. Para que sirve event.preventDefault?
+Respuesta: Sirve para evitar que el navegador recargue la pagina al enviar el formulario.
+
+47. El modal guarda los datos en localStorage?
+Respuesta: No. En esta version solo valida, muestra confirmacion y limpia el formulario.
+
+48. Que hace handleClose?
+Respuesta: Cierra el modal y reinicia submitted, errors y formData para dejarlo limpio.
+
+49. Para que sirve noValidate en el formulario?
+Respuesta: Desactiva la validacion automatica del navegador para usar la validacion personalizada hecha en React.
+
+50. Por que se usa className con condicion en los inputs?
+Respuesta: Para agregar is-invalid cuando hay un error y mostrar el estilo de error de Bootstrap.
+
+============================================================
+9. PREGUNTAS SOBRE FOOTER Y NEWSLETTER
+============================================================
+
+51. Que hace el formulario del Footer?
+Respuesta: Permite ingresar un correo para suscribirse al newsletter.
+
+52. Que estados usa Footer?
+Respuesta: Usa email para el correo escrito y message para mostrar un mensaje de error o exito.
+
+53. Que valida handleNewsletter?
+Respuesta: Valida que el correo tenga un formato correcto antes de mostrar la confirmacion.
+
+54. Que pasa si el correo del newsletter es invalido?
+Respuesta: Se muestra el mensaje "Ingresa un correo valido para suscribirte."
+
+55. Que pasa si el correo del newsletter es valido?
+Respuesta: Se muestra un mensaje de confirmacion y se limpia el campo email.
+
+============================================================
+10. PREGUNTAS SOBRE BOOTSTRAP Y RESPONSIVIDAD
+============================================================
+
+56. Que clases de Bootstrap usas para la grilla?
+Respuesta: Uso container, row, col-lg-6, col-md-4, col-sm-6 y g-4.
+
+57. Para que sirve navbar-expand-lg?
+Respuesta: Hace que el navbar se vea expandido en pantallas grandes y como menu hamburguesa en pantallas pequenas.
+
+58. Para que sirve btn btn-primary?
+Respuesta: Aplica el estilo de boton principal de Bootstrap.
+
+59. Para que sirve form-control?
+Respuesta: Da estilo Bootstrap a los inputs del formulario.
+
+60. Para que sirve modal fade show?
+Respuesta: Aplica estilos de modal de Bootstrap y lo muestra visualmente en pantalla.
+
+============================================================
+11. PREGUNTAS MAS DIFICILES
+============================================================
+
+61. Que diferencia hay entre estado y props?
+Respuesta: El estado pertenece al componente y puede cambiar. Las props son datos o funciones que un componente recibe desde otro.
+
+62. Que significa renderizado condicional?
+Respuesta: Significa mostrar una cosa u otra dependiendo de una condicion, por ejemplo mostrar el formulario o el mensaje de exito.
+
+63. Donde hay renderizado condicional en RegistrationModal?
+Respuesta: En submitted ? mensaje de exito : formulario.
+
+64. Que pasaria si no usaras clearInterval en el carrusel?
+Respuesta: El temporizador podria seguir activo innecesariamente y causar problemas de rendimiento.
+
+65. Por que conviene guardar los cursos en un arreglo?
+Respuesta: Porque permite renderizarlos con map, modificar datos facilmente y evitar repetir codigo.
+
+66. Que mejorarias si el proyecto creciera?
+Respuesta: Podria conectar formularios a una API, agregar rutas, pruebas automatizadas, mejor accesibilidad y datos externos.
+
+============================================================
+12. VERSION DE REPASO RAPIDO
+============================================================
+
+Si el profesor pregunta por el flujo principal, responder:
+
+App.jsx controla el modal con showModal. Navbar y Hero reciben onRegisterClick para abrirlo.
+RegistrationModal recibe isOpen y onClose para mostrarse o cerrarse.
+CoursesCarousel usa activeIndex y useEffect para mostrar cursos y cambiarlos automaticamente.
+FAQAccordion usa openIndex para abrir o cerrar preguntas.
+Los formularios usan useState, validacion personalizada y mensajes de error o exito.
+Bootstrap se usa para la estructura responsiva y los estilos base.

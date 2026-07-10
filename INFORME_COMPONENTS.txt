@@ -1,0 +1,707 @@
+INFORME DEL PROYECTO EDUCLOUD
+Landing Page responsiva con React, Vite y Bootstrap
+
+1. QUE SE HIZO EN EL PROYECTO
+
+Se transformo la plantilla inicial en una landing page para EduCloud, una academia virtual de cursos online de programacion y diseno.
+
+Cambios principales:
+- Se cargo Bootstrap 5 desde el CDN en index.html.
+- Se cambio el titulo del sitio a "EduCloud - Cursos online".
+- Se creo una estructura por componentes en src/components.
+- Se creo un Navbar sticky responsivo con menu hamburguesa y dropdown de cursos.
+- Se creo una Hero section con CTA principal para abrir el modal de registro.
+- Se creo un carrusel de cursos con useState y useEffect.
+- Se creo un modal de registro con validacion de formulario.
+- Se creo un acordeon de preguntas frecuentes.
+- Se crearon tarjetas de instructores.
+- Se creo un footer con newsletter y validacion de correo.
+- Se agregaron estilos responsivos en App.css y Navbar.css.
+- Se agregaron comentarios en los componentes para explicar las partes importantes.
+
+2. COMO FUNCIONA LA APP
+
+App.jsx es el componente principal. Importa todas las secciones y controla el estado showModal.
+
+showModal:
+- false: el modal no se muestra.
+- true: el modal de registro aparece.
+
+La funcion setShowModal(true) se pasa como prop a Navbar y Hero con el nombre onRegisterClick.
+Eso permite que el boton "Registrarme" del Navbar y el boton "Inscribirme gratis" del Hero abran el mismo modal.
+
+3. HOOKS USADOS
+
+useState:
+- Navbar.jsx: controla si esta abierto el menu mobile y si esta abierto el dropdown.
+- App.jsx: controla si se muestra el modal.
+- CoursesCarousel.jsx: controla el curso activo del carrusel.
+- FAQAccordion.jsx: controla que pregunta del acordeon esta abierta.
+- RegistrationModal.jsx: controla datos del formulario, errores y mensaje de exito.
+- Footer.jsx: controla correo y mensaje del newsletter.
+
+useEffect:
+- CoursesCarousel.jsx: crea un intervalo para cambiar automaticamente el curso cada 4.5 segundos.
+- Tambien limpia el intervalo cuando el componente se desmonta, usando return () => clearInterval(timer).
+
+4. EXPLICACION DE COMPONENTES
+
+Navbar.jsx:
+Muestra la barra superior. Usa clases Bootstrap como navbar, navbar-expand-lg, navbar-toggler y dropdown-menu.
+La interactividad no depende del JavaScript de Bootstrap, sino de React con useState.
+
+Hero.jsx:
+Es la primera seccion visible. Muestra el nombre EduCloud, texto de presentacion, botones CTA y una tarjeta visual que simula la plataforma.
+
+Features.jsx:
+Muestra beneficios del metodo EduCloud. Usa un arreglo llamado features y map para generar tarjetas.
+
+CoursesCarousel.jsx:
+Muestra cursos destacados. Tiene botones anterior/siguiente, indicadores y cambio automatico con useEffect.
+
+Instructors.jsx:
+Muestra tarjetas de instructores. Usa un arreglo de datos y map.
+
+FAQAccordion.jsx:
+Muestra preguntas frecuentes. El estado openIndex indica cual pregunta esta abierta.
+
+RegistrationModal.jsx:
+Modal funcional de registro. Valida nombre, email y curso de interes. Si todo esta correcto, muestra confirmacion.
+
+Footer.jsx:
+Muestra informacion del sitio, links y formulario de newsletter con validacion de email.
+
+5. CODIGO COMPLETO DE COMPONENTS
+
+------------------------------------------------------------
+src/components/Navbar.jsx
+------------------------------------------------------------
+
+import { useState } from 'react'
+import './Navbar.css'
+
+export default function Navbar({ onRegisterClick }) {
+  // isOpen controla el menu hamburguesa en pantallas pequenas.
+  const [isOpen, setIsOpen] = useState(false)
+  // coursesOpen controla el submenu desplegable de cursos.
+  const [coursesOpen, setCoursesOpen] = useState(false)
+
+  // Al navegar a una seccion se cierran los menus abiertos.
+  const closeMenu = () => {
+    setIsOpen(false)
+    setCoursesOpen(false)
+  }
+
+  return (
+    <nav className='navbar navbar-expand-lg edu-navbar sticky-top'>
+      <div className='container'>
+        <a className='navbar-brand edu-brand' href='#hero' onClick={closeMenu}>
+          Edu<span>Cloud</span>
+        </a>
+
+        <button
+          className='navbar-toggler'
+          type='button'
+          aria-controls='eduNavbar'
+          aria-expanded={isOpen}
+          aria-label='Abrir menu'
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <span className='navbar-toggler-icon'></span>
+        </button>
+
+        <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id='eduNavbar'>
+          <ul className='navbar-nav ms-auto align-items-lg-center gap-lg-2'>
+            <li className='nav-item'>
+              <a className='nav-link' href='#hero' onClick={closeMenu}>Inicio</a>
+            </li>
+            <li className='nav-item dropdown'>
+              {/* Dropdown creado con React para no depender del JS de Bootstrap. */}
+              <button
+                className={`nav-link dropdown-toggle btn btn-link ${coursesOpen ? 'show' : ''}`}
+                type='button'
+                aria-expanded={coursesOpen}
+                onClick={() => setCoursesOpen(!coursesOpen)}
+              >
+                Cursos
+              </button>
+              <ul className={`dropdown-menu ${coursesOpen ? 'show' : ''}`}>
+                <li><a className='dropdown-item' href='#courses' onClick={closeMenu}>Programacion web</a></li>
+                <li><a className='dropdown-item' href='#courses' onClick={closeMenu}>Diseno UX/UI</a></li>
+                <li><a className='dropdown-item' href='#courses' onClick={closeMenu}>Datos y automatizacion</a></li>
+              </ul>
+            </li>
+            <li className='nav-item'>
+              <a className='nav-link' href='#instructors' onClick={closeMenu}>Instructores</a>
+            </li>
+            <li className='nav-item'>
+              <a className='nav-link' href='#faq' onClick={closeMenu}>FAQs</a>
+            </li>
+            <li className='nav-item'>
+              <button
+                className='btn btn-primary edu-nav-cta'
+                type='button'
+                onClick={() => {
+                  closeMenu()
+                  // Esta funcion viene desde App y abre el modal de registro.
+                  onRegisterClick()
+                }}
+              >
+                Registrarme
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  )
+}
+
+------------------------------------------------------------
+src/components/Hero.jsx
+------------------------------------------------------------
+
+export default function Hero({ onRegisterClick }) {
+  return (
+    <section id='hero' className='hero-section'>
+      <div className='container'>
+        <div className='row align-items-center g-5'>
+          <div className='col-lg-6'>
+            <p className='hero-eyebrow'>Academia virtual de programacion y diseno</p>
+            <h1 className='hero-title'>EduCloud</h1>
+            <p className='hero-subtitle'>
+              Aprende con rutas guiadas, clases en vivo y proyectos reales para
+              construir tu portafolio desde la primera semana.
+            </p>
+            <div className='hero-actions'>
+              <button className='btn btn-primary btn-lg' type='button' onClick={onRegisterClick}>
+                Inscribirme gratis
+              </button>
+              <a className='btn btn-outline-dark btn-lg' href='#courses'>
+                Ver cursos
+              </a>
+            </div>
+          </div>
+          <div className='col-lg-6'>
+            {/* Bloque visual que simula una vista de la plataforma EduCloud. */}
+            <div className='hero-dashboard' aria-label='Vista previa de plataforma EduCloud'>
+              <div className='dashboard-top'>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <div className='dashboard-body'>
+                <div className='lesson-panel'>
+                  <span className='badge text-bg-success'>En vivo</span>
+                  <h2>React + UX Lab</h2>
+                  <p>Clase 04: componentes, estados y prototipos interactivos.</p>
+                  {/* Barra Bootstrap para mostrar avance del curso. */}
+                  <div className='progress' role='progressbar' aria-label='Progreso del curso' aria-valuenow='68' aria-valuemin='0' aria-valuemax='100'>
+                    <div className='progress-bar' style={{ width: '68%' }}></div>
+                  </div>
+                </div>
+                <div className='mini-grid'>
+                  <div>HTML</div>
+                  <div>Figma</div>
+                  <div>React</div>
+                  <div>CSS</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+------------------------------------------------------------
+src/components/Features.jsx
+------------------------------------------------------------
+
+// Arreglo de datos: permite crear tarjetas sin repetir JSX manualmente.
+const features = [
+  {
+    icon: '01',
+    title: 'Rutas por nivel',
+    desc: 'Elige rutas de frontend, backend, UX/UI o fundamentos desde cero.'
+  },
+  {
+    icon: '02',
+    title: 'Proyectos reales',
+    desc: 'Crea landing pages, dashboards, apps React y casos de diseno para tu portafolio.'
+  },
+  {
+    icon: '03',
+    title: 'Mentoria semanal',
+    desc: 'Resuelve dudas con instructores y recibe feedback directo sobre tus entregas.'
+  }
+]
+
+export default function Features() {
+  return (
+    <section id='features' className='section-block'>
+      <div className='container'>
+        <div className='section-heading'>
+          <p className='section-kicker'>Metodo EduCloud</p>
+          <h2>Aprendizaje practico, ordenado y acompanado</h2>
+        </div>
+        <div className='row g-4'>
+          {/* map recorre cada beneficio y genera una tarjeta responsive. */}
+          {features.map((feature) => (
+            <div className='col-md-4' key={feature.title}>
+              <article className='feature-card h-100'>
+                <div className='feature-icon'>{feature.icon}</div>
+                <h3>{feature.title}</h3>
+                <p>{feature.desc}</p>
+              </article>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+------------------------------------------------------------
+src/components/CoursesCarousel.jsx
+------------------------------------------------------------
+
+import { useEffect, useState } from 'react'
+
+// Cada objeto representa una diapositiva del carrusel.
+const courses = [
+  {
+    title: 'Frontend con React',
+    category: 'Programacion',
+    level: 'Intermedio',
+    text: 'Componentes, hooks, consumo de APIs y despliegue con Vite.',
+    accent: 'frontend'
+  },
+  {
+    title: 'UX/UI desde cero',
+    category: 'Diseno',
+    level: 'Inicial',
+    text: 'Investigacion, wireframes, prototipos en Figma y pruebas con usuarios.',
+    accent: 'design'
+  },
+  {
+    title: 'Backend con Node',
+    category: 'Programacion',
+    level: 'Intermedio',
+    text: 'APIs REST, bases de datos, autenticacion y buenas practicas.',
+    accent: 'backend'
+  }
+]
+
+export default function CoursesCarousel() {
+  // Guarda la posicion del curso que se esta mostrando.
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  useEffect(() => {
+    // Cambia automaticamente de curso cada 4.5 segundos.
+    const timer = setInterval(() => {
+      setActiveIndex((current) => (current + 1) % courses.length)
+    }, 4500)
+
+    // Limpia el intervalo cuando el componente se desmonta.
+    return () => clearInterval(timer)
+  }, [])
+
+  const goToCourse = (index) => setActiveIndex(index)
+  // El modulo evita que el indice se salga del arreglo.
+  const prevCourse = () => setActiveIndex((activeIndex - 1 + courses.length) % courses.length)
+  const nextCourse = () => setActiveIndex((activeIndex + 1) % courses.length)
+  const activeCourse = courses[activeIndex]
+
+  return (
+    <section id='courses' className='section-block courses-section'>
+      <div className='container'>
+        <div className='section-heading'>
+          <p className='section-kicker'>Cursos destacados</p>
+          <h2>Elige una ruta y avanza con proyectos guiados</h2>
+        </div>
+
+        <div className={`course-carousel course-${activeCourse.accent}`}>
+          <button className='carousel-control prev' type='button' onClick={prevCourse} aria-label='Curso anterior'>
+            {'<'}
+          </button>
+
+          <article className='course-slide'>
+            <div>
+              <span className='badge rounded-pill text-bg-light'>{activeCourse.category}</span>
+              <span className='badge rounded-pill text-bg-dark ms-2'>{activeCourse.level}</span>
+            </div>
+            <h3>{activeCourse.title}</h3>
+            <p>{activeCourse.text}</p>
+            <a className='btn btn-light' href='#footer'>Recibir programa</a>
+          </article>
+
+          <button className='carousel-control next' type='button' onClick={nextCourse} aria-label='Curso siguiente'>
+            {'>'}
+          </button>
+        </div>
+
+        <div className='carousel-indicators-custom' aria-label='Indicadores del carrusel'>
+          {/* Indicadores manuales para saltar directamente a un curso. */}
+          {courses.map((course, index) => (
+            <button
+              className={index === activeIndex ? 'active' : ''}
+              key={course.title}
+              type='button'
+              aria-label={`Ver ${course.title}`}
+              onClick={() => goToCourse(index)}
+            ></button>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+------------------------------------------------------------
+src/components/Instructors.jsx
+------------------------------------------------------------
+
+// Datos de instructores. Cambiar aqui actualiza automaticamente las tarjetas.
+const instructors = [
+  {
+    name: 'Camila Rojas',
+    role: 'Frontend mentor',
+    initials: 'CR',
+    bio: 'Especialista en React, accesibilidad y sistemas de componentes.'
+  },
+  {
+    name: 'Diego Torres',
+    role: 'Product designer',
+    initials: 'DT',
+    bio: 'Guia proyectos de UX research, prototipado y design systems.'
+  },
+  {
+    name: 'Valentina Soto',
+    role: 'Backend mentor',
+    initials: 'VS',
+    bio: 'Trabaja con APIs, Node.js, bases de datos y arquitectura cloud.'
+  }
+]
+
+export default function Instructors() {
+  return (
+    <section id='instructors' className='section-block instructors-section'>
+      <div className='container'>
+        <div className='section-heading'>
+          <p className='section-kicker'>Equipo docente</p>
+          <h2>Instructores activos en la industria</h2>
+        </div>
+        <div className='row g-4'>
+          {/* Bootstrap col-md-4 muestra 3 columnas en tablet/escritorio y 1 en movil. */}
+          {instructors.map((instructor) => (
+            <div className='col-md-4' key={instructor.name}>
+              <article className='instructor-card h-100'>
+                <div className='instructor-avatar'>{instructor.initials}</div>
+                <h3>{instructor.name}</h3>
+                <p className='instructor-role'>{instructor.role}</p>
+                <p>{instructor.bio}</p>
+              </article>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+------------------------------------------------------------
+src/components/FAQAccordion.jsx
+------------------------------------------------------------
+
+import { useState } from 'react'
+
+// Preguntas frecuentes que se renderizan dentro del acordeon.
+const faqs = [
+  {
+    question: 'Necesito experiencia previa para entrar?',
+    answer: 'No. Tenemos rutas desde cero y un diagnostico inicial para recomendarte el mejor punto de partida.'
+  },
+  {
+    question: 'Las clases quedan grabadas?',
+    answer: 'Si. Puedes ver las grabaciones, descargar recursos y revisar ejercicios cuando quieras desde la plataforma.'
+  },
+  {
+    question: 'Recibo certificado al finalizar?',
+    answer: 'Si completas los proyectos y evaluaciones de la ruta, recibes un certificado digital de EduCloud.'
+  }
+]
+
+export default function FAQAccordion() {
+  // Guarda el indice de la pregunta abierta. -1 significa que todas estan cerradas.
+  const [openIndex, setOpenIndex] = useState(0)
+
+  return (
+    <section id='faq' className='section-block faq-section'>
+      <div className='container'>
+        <div className='section-heading'>
+          <p className='section-kicker'>Preguntas frecuentes</p>
+          <h2>Todo claro antes de comenzar</h2>
+        </div>
+
+        <div className='accordion' id='eduFaq'>
+          {faqs.map((faq, index) => {
+            // Esta variable decide si se agrega la clase show de Bootstrap.
+            const isOpen = openIndex === index
+
+            return (
+              <div className='accordion-item' key={faq.question}>
+                <h3 className='accordion-header'>
+                  <button
+                    className={`accordion-button ${isOpen ? '' : 'collapsed'}`}
+                    type='button'
+                    aria-expanded={isOpen}
+                    onClick={() => setOpenIndex(isOpen ? -1 : index)}
+                  >
+                    {faq.question}
+                  </button>
+                </h3>
+                <div className={`accordion-collapse collapse ${isOpen ? 'show' : ''}`}>
+                  <div className='accordion-body'>{faq.answer}</div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+------------------------------------------------------------
+src/components/RegistrationModal.jsx
+------------------------------------------------------------
+
+import { useState } from 'react'
+
+// Valores iniciales del formulario. Sirven tambien para limpiar despues de enviar.
+const initialForm = {
+  name: '',
+  email: '',
+  interest: ''
+}
+
+export default function RegistrationModal({ isOpen, onClose }) {
+  // formData guarda lo que el usuario escribe en cada campo.
+  const [formData, setFormData] = useState(initialForm)
+  // errors guarda los mensajes de validacion por campo.
+  const [errors, setErrors] = useState({})
+  // submitted cambia la vista del formulario por el mensaje de exito.
+  const [submitted, setSubmitted] = useState(false)
+
+  // Valida los campos antes de aceptar el registro.
+  const validate = () => {
+    const nextErrors = {}
+
+    if (formData.name.trim().length < 3) {
+      nextErrors.name = 'Ingresa al menos 3 caracteres.'
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      nextErrors.email = 'Ingresa un correo valido.'
+    }
+
+    if (!formData.interest) {
+      nextErrors.interest = 'Selecciona un curso.'
+    }
+
+    return nextErrors
+  }
+
+  const handleChange = (event) => {
+    const { name, value } = event.target
+    // name permite actualizar dinamicamente name, email o interest.
+    setFormData({ ...formData, [name]: value })
+    setErrors({ ...errors, [name]: '' })
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    const nextErrors = validate()
+    setErrors(nextErrors)
+
+    if (Object.keys(nextErrors).length === 0) {
+      // Si no hay errores, se muestra el mensaje de confirmacion.
+      setSubmitted(true)
+      setFormData(initialForm)
+    }
+  }
+
+  const handleClose = () => {
+    // Deja el modal limpio para la siguiente vez que se abra.
+    setSubmitted(false)
+    setErrors({})
+    onClose()
+  }
+
+  // Si el modal esta cerrado, no se renderiza nada en pantalla.
+  if (!isOpen) return null
+
+  return (
+    <>
+      <div className='modal fade show edu-modal' tabIndex='-1' role='dialog' aria-modal='true'>
+        <div className='modal-dialog modal-dialog-centered'>
+          <div className='modal-content'>
+            <div className='modal-header'>
+              <div>
+                <p className='section-kicker mb-1'>Registro</p>
+                <h2 className='modal-title'>Comienza en EduCloud</h2>
+              </div>
+              <button type='button' className='btn-close' aria-label='Cerrar' onClick={handleClose}></button>
+            </div>
+            <div className='modal-body'>
+              {submitted ? (
+                <div className='alert alert-success mb-0'>
+                  Registro enviado. Te contactaremos con el programa del curso.
+                </div>
+              ) : (
+                <form noValidate onSubmit={handleSubmit}>
+                  <div className='mb-3'>
+                    <label className='form-label' htmlFor='name'>Nombre completo</label>
+                    <input
+                      className={`form-control ${errors.name ? 'is-invalid' : ''}`}
+                      id='name'
+                      name='name'
+                      type='text'
+                      value={formData.name}
+                      onChange={handleChange}
+                    />
+                    {errors.name && <div className='invalid-feedback'>{errors.name}</div>}
+                  </div>
+                  <div className='mb-3'>
+                    <label className='form-label' htmlFor='email'>Correo electronico</label>
+                    <input
+                      className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                      id='email'
+                      name='email'
+                      type='email'
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
+                    {errors.email && <div className='invalid-feedback'>{errors.email}</div>}
+                  </div>
+                  <div className='mb-4'>
+                    <label className='form-label' htmlFor='interest'>Curso de interes</label>
+                    <select
+                      className={`form-select ${errors.interest ? 'is-invalid' : ''}`}
+                      id='interest'
+                      name='interest'
+                      value={formData.interest}
+                      onChange={handleChange}
+                    >
+                      <option value=''>Selecciona una opcion</option>
+                      <option value='react'>Frontend con React</option>
+                      <option value='uxui'>UX/UI desde cero</option>
+                      <option value='node'>Backend con Node</option>
+                    </select>
+                    {errors.interest && <div className='invalid-feedback'>{errors.interest}</div>}
+                  </div>
+                  <button className='btn btn-primary w-100' type='submit'>
+                    Enviar registro
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className='modal-backdrop fade show'></div>
+    </>
+  )
+}
+
+------------------------------------------------------------
+src/components/Footer.jsx
+------------------------------------------------------------
+
+import { useState } from 'react'
+
+export default function Footer() {
+  // Estados usados por el formulario del newsletter.
+  const [email, setEmail] = useState('')
+  const [message, setMessage] = useState('')
+
+  const handleNewsletter = (event) => {
+    event.preventDefault()
+
+    // Validacion simple de correo antes de mostrar la confirmacion.
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setMessage('Ingresa un correo valido para suscribirte.')
+      return
+    }
+
+    setMessage('Listo. Recibiras novedades y becas de EduCloud.')
+    setEmail('')
+  }
+
+  return (
+    <footer id='footer' className='footer'>
+      <div className='container'>
+        <div className='row g-4 align-items-start'>
+          <div className='col-lg-4'>
+            <span className='footer-logo'>Edu<span>Cloud</span></span>
+            <p>Academia virtual para aprender programacion y diseno con proyectos reales.</p>
+          </div>
+          <div className='col-sm-6 col-lg-2'>
+            <h2>Explorar</h2>
+            <a href='#courses'>Cursos</a>
+            <a href='#instructors'>Instructores</a>
+            <a href='#faq'>FAQs</a>
+          </div>
+          <div className='col-sm-6 col-lg-2'>
+            <h2>Contacto</h2>
+            <p>hola@educloud.cl</p>
+            <p>Santiago, Chile</p>
+          </div>
+          <div className='col-lg-4'>
+            <h2>Newsletter</h2>
+            <form className='newsletter-form' noValidate onSubmit={handleNewsletter}>
+              <label className='visually-hidden' htmlFor='newsletter'>Correo electronico</label>
+              <div className='input-group'>
+                <input
+                  className='form-control'
+                  id='newsletter'
+                  type='email'
+                  placeholder='tu@email.com'
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                />
+                <button className='btn btn-primary' type='submit'>Suscribirme</button>
+              </div>
+              {message && <p className='newsletter-message'>{message}</p>}
+            </form>
+          </div>
+        </div>
+        <div className='footer-bottom'>
+          <p>(c) {new Date().getFullYear()} EduCloud. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </footer>
+  )
+}
+
+6. PREGUNTAS QUE TE PUEDEN HACER Y RESPUESTAS CORTAS
+
+Pregunta: Por que usaste componentes?
+Respuesta: Para separar la pagina en partes reutilizables y faciles de mantener: Navbar, Hero, Cursos, Instructores, FAQs, Modal y Footer.
+
+Pregunta: Donde esta la validacion?
+Respuesta: En RegistrationModal.jsx para el formulario de registro y en Footer.jsx para el newsletter.
+
+Pregunta: Donde se usa useEffect?
+Respuesta: En CoursesCarousel.jsx. Se usa para cambiar automaticamente el curso activo cada 4.5 segundos y limpiar el intervalo.
+
+Pregunta: Como se abre el modal?
+Respuesta: App.jsx tiene el estado showModal. Navbar y Hero reciben la funcion onRegisterClick, que ejecuta setShowModal(true).
+
+Pregunta: Como funciona el acordeon?
+Respuesta: FAQAccordion.jsx usa openIndex. Si openIndex coincide con el indice de una pregunta, esa respuesta se muestra con la clase show.
+
+Pregunta: Como se hizo responsive?
+Respuesta: Se usaron clases Bootstrap como container, row, col-md-4, col-lg-6, navbar-expand-lg y media queries en CSS.
