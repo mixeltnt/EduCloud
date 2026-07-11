@@ -1,18 +1,71 @@
-# React + Vite
+# 🎓 EduCloud
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Plataforma web educativa desarrollada como proyecto académico utilizando React, Vite y Bootstrap.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Tecnologías utilizadas
 
-## React Compiler
+- React
+- JavaScript (ES6+)
+- Vite
+- Bootstrap 5
+- HTML5
+- CSS3
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+---
 
-Note: This will impact Vite dev & build performances.
+## ✨ Funcionalidades
 
-## Expanding the ESLint configuration
+- 🏠 Página de inicio responsiva
+- 📚 Catálogo de cursos
+- 🎠 Carrusel interactivo
+- 📋 Acordeón de preguntas frecuentes
+- 🪟 Ventanas Modal
+- 📱 Diseño Responsive
+- ✅ Validación de formularios
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 📂 Estructura del proyecto
+
+```
+src/
+│
+├── assets/
+├── components/
+├── App.jsx
+├── main.jsx
+```
+
+---
+
+## ▶️ Instalación
+
+```bash
+npm install
+npm run dev
+```
+
+---
+
+## 🎯 Objetivo
+
+Este proyecto fue desarrollado para la asignatura **Desarrollo Web Avanzado** de INACAP con el objetivo de aplicar conceptos modernos del desarrollo Frontend utilizando React.
+
+---
+
+## 📸 Capturas
+
+*(Próximamente)*
+
+---
+
+## 👨‍💻 Autor
+
+**Michael Oliva**
+
+Analista Programador (INACAP)
+
+GitHub:
+https://github.com/mixeltnt
