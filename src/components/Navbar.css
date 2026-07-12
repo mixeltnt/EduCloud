@@ -1,0 +1,55 @@
+.edu-navbar {
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+}
+
+.edu-brand {
+  color: #111827;
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.edu-brand span {
+  color: #2563eb;
+}
+
+.edu-navbar .nav-link {
+  color: #334155;
+  font-weight: 700;
+}
+
+.edu-navbar .nav-link:hover,
+.edu-navbar .nav-link:focus {
+  color: #2563eb;
+}
+
+.edu-navbar .dropdown-toggle {
+  text-decoration: none;
+}
+
+.edu-navbar .dropdown-menu.show {
+  display: block;
+}
+
+.edu-nav-cta {
+  white-space: nowrap;
+}
+
+@media (max-width: 991.98px) {
+  .edu-navbar .navbar-collapse {
+    padding: 16px 0 8px;
+  }
+
+  .edu-navbar .dropdown-menu {
+    border: 0;
+    background: #f8fafc;
+    box-shadow: none;
+  }
+
+  .edu-nav-cta {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
