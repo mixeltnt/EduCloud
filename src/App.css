@@ -464,3 +464,30 @@
     margin-top: 10px;
   }
 }
+
+.admin-layout {
+  min-height: calc(100vh - 72px);
+  background: #f8f9fa;
+}
+
+.admin-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.admin-section h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.admin-section .table {
+  margin-bottom: 0;
+}
+
+.admin-section .card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+}

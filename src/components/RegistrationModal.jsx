@@ -1,68 +1,75 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { cursosApi } from '../api/educloud'
 
-/**
- * Modal de registro para los cursos de EduCloud.
- * Muestra un formulario, valida los campos y confirma el envio cuando los datos son correctos.
- */
-
-// Estado inicial del formulario. Tambien se usa para limpiar los campos despues de enviar o cerrar el modal.
 const initialForm = {
   name: '',
   email: '',
-  interest: ''
+  courseId: '',
+  courseName: '',
 }
 
 export default function RegistrationModal({ isOpen, onClose }) {
-  // Guarda los valores que el usuario escribe en el formulario.
   const [formData, setFormData] = useState(initialForm)
-
-  // Guarda los mensajes de error de cada campo cuando la validacion falla.
   const [errors, setErrors] = useState({})
-
-  // Indica si el formulario ya fue enviado correctamente.
   const [submitted, setSubmitted] = useState(false)
+  const [cursos, setCursos] = useState([])
+  const [saving, setSaving] = useState(false)
 
-  // Valida los campos del formulario y devuelve un objeto con los errores encontrados.
+  useEffect(() => {
+    if (isOpen) {
+      cursosApi.list().then((res) => setCursos(res.datos || [])).catch(() => {})
+    }
+  }, [isOpen])
+
   const validate = () => {
     const nextErrors = {}
-
     if (formData.name.trim().length < 3) {
       nextErrors.name = 'Ingresa al menos 3 caracteres.'
     }
-
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       nextErrors.email = 'Ingresa un correo valido.'
     }
-
-    if (!formData.interest) {
-      nextErrors.interest = 'Selecciona un curso.'
+    if (!formData.courseId) {
+      nextErrors.courseId = 'Selecciona un curso.'
     }
-
     return nextErrors
   }
 
-  // Actualiza el estado del formulario cada vez que el usuario escribe o selecciona una opcion.
   const handleChange = (event) => {
     const { name, value } = event.target
-
-    setFormData({ ...formData, [name]: value })
+    const next = { ...formData, [name]: value }
+    if (name === 'courseId') {
+      const curso = cursos.find((c) => c._id === value)
+      if (curso) next.courseName = curso.nombre
+    }
+    setFormData(next)
     setErrors({ ...errors, [name]: '' })
   }
 
-  // Procesa el envio del formulario: evita recargar la pagina, valida y muestra la confirmacion.
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-
     const nextErrors = validate()
     setErrors(nextErrors)
+    if (Object.keys(nextErrors).length > 0) return
 
-    if (Object.keys(nextErrors).length === 0) {
-      setSubmitted(true)
-      setFormData(initialForm)
+    setSaving(true)
+    const inscripcion = {
+      alumno: { nombre: formData.name, email: formData.email },
+      cursoId: formData.courseId,
+      cursoNombre: formData.courseName,
+      fechaInscripcion: new Date().toISOString().split('T')[0],
+      progreso: 0,
+      estado: 'activa',
     }
+    const stored = localStorage.getItem('educloud_inscripciones')
+    const inscripciones = stored ? JSON.parse(stored) : []
+    inscripciones.push(inscripcion)
+    localStorage.setItem('educloud_inscripciones', JSON.stringify(inscripciones))
+    setSaving(false)
+    setSubmitted(true)
+    setFormData(initialForm)
   }
 
-  // Cierra el modal y deja sus estados listos para la proxima vez que se abra.
   const handleClose = () => {
     setSubmitted(false)
     setErrors({})
@@ -70,7 +77,6 @@ export default function RegistrationModal({ isOpen, onClose }) {
     onClose()
   }
 
-  // Si el modal no esta abierto, no se renderiza nada en pantalla.
   if (!isOpen) return null
 
   return (
@@ -83,14 +89,13 @@ export default function RegistrationModal({ isOpen, onClose }) {
                 <p className='section-kicker mb-1'>Registro</p>
                 <h2 className='modal-title'>Comienza en EduCloud</h2>
               </div>
-
               <button type='button' className='btn-close' aria-label='Cerrar' onClick={handleClose}></button>
             </div>
 
             <div className='modal-body'>
               {submitted ? (
                 <div className='alert alert-success mb-0'>
-                  Registro enviado. Te contactaremos con el programa del curso.
+                  Inscripcion registrada. Te contactaremos con el programa del curso.
                 </div>
               ) : (
                 <form noValidate onSubmit={handleSubmit}>
@@ -121,24 +126,24 @@ export default function RegistrationModal({ isOpen, onClose }) {
                   </div>
 
                   <div className='mb-4'>
-                    <label className='form-label' htmlFor='interest'>Curso de interes</label>
+                    <label className='form-label' htmlFor='courseId'>Curso de interes</label>
                     <select
-                      className={`form-select ${errors.interest ? 'is-invalid' : ''}`}
-                      id='interest'
-                      name='interest'
-                      value={formData.interest}
+                      className={`form-select ${errors.courseId ? 'is-invalid' : ''}`}
+                      id='courseId'
+                      name='courseId'
+                      value={formData.courseId}
                       onChange={handleChange}
                     >
                       <option value=''>Selecciona una opcion</option>
-                      <option value='react'>Frontend con React</option>
-                      <option value='uxui'>UX/UI desde cero</option>
-                      <option value='node'>Backend con Node</option>
+                      {cursos.map((c) => (
+                        <option key={c._id} value={c._id}>{c.nombre}</option>
+                      ))}
                     </select>
-                    {errors.interest && <div className='invalid-feedback'>{errors.interest}</div>}
+                    {errors.courseId && <div className='invalid-feedback'>{errors.courseId}</div>}
                   </div>
 
-                  <button className='btn btn-primary w-100' type='submit'>
-                    Enviar registro
+                  <button className='btn btn-primary w-100' type='submit' disabled={saving}>
+                    {saving ? 'Registrando...' : 'Inscribirme gratis'}
                   </button>
                 </form>
               )}
